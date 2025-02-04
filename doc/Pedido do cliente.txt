@@ -1,0 +1,35 @@
+simulei um pedido de um cliente para trabalhar com base nisso:
+Pedido de Desenvolvimento de Software – Simulador de Apostas Esportivas
+
+Olá, boa tarde!
+
+Gostaria de desenvolver um software simples e intuitivo, com interface gráfica, para auxiliar na simulação de apostas esportivas. O objetivo do programa é me permitir testar diferentes estratégias de apostas sem utilizar dinheiro real.
+
+Funcionalidades Essenciais:
+Gerenciamento de Banca Simulada
+
+O usuário poderá definir um valor inicial para sua banca (exemplo: R$ 10.000,00).
+Toda aposta realizada será registrada e afetará o saldo da banca conforme o resultado (vitória ou derrota).
+Registro de Apostas
+
+O usuário poderá inserir manualmente os seguintes dados para cada aposta:
+Valor da odd (cotação da aposta).
+Valor apostado.
+Resultado da aposta (vitória – "green" ou derrota – "red").
+Se a aposta for vencedora, o lucro será calculado e somado à banca.
+Se a aposta for perdedora, o valor apostado será descontado da banca.
+Histórico e Salvamento de Dados
+
+O programa deve salvar todas as apostas registradas.
+O usuário poderá continuar suas simulações mesmo após fechar e reabrir o programa.
+Possíveis Expansões Futuras:
+Caso o software atenda bem às necessidades básicas, no futuro podemos adicionar novas funcionalidades, como:
+
+Gráficos e estatísticas de desempenho.
+Classificação das apostas por tipo (múltipla, gols, escanteios, etc.).
+Filtros e relatórios personalizados.
+Para esta versão inicial, o foco é que o programa seja simples, prático e rápido de usar, permitindo a simulação eficaz de apostas.
+
+Fico no aguardo para saber como podemos seguir com o desenvolvimento.
+
+:D
