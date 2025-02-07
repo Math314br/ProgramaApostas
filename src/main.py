@@ -1,6 +1,9 @@
 #aqui é o programa pricincipal aonde tudo ira rodar.
 from tkinter import *
 from tkinter import ttk
+import json
+import os
+
 
 janela = Tk()
 
@@ -21,6 +24,9 @@ class Applicação():
      self.red()
      self.frame2()
      self.historico()
+     self.salvar_aposta(resultado=0)
+     self.salvar()
+     self.carregar()
      janela.mainloop()
     def tela(self):
        #TITULO PRINCIPAL DO PROGRAMA
@@ -116,10 +122,10 @@ class Applicação():
        self.entry_odd.place(relx=0.54, rely=0.19)
     # BOTAO GRENN E RED
     def green(self):
-       self.botao_green = Button(self.frame1,text="GREEN", font=('arial',30,'bold'))
+       self.botao_green = Button(self.frame1,text="GREEN", font=('arial',30,'bold'), command=lambda: self.salvar_aposta("GREEN"))
        self.botao_green.place(relx=0.16, rely=0.24)
     def red(self):
-       self.botao_red = Button(self.frame1,text="RED", font=('arial',30,'bold'))
+       self.botao_red = Button(self.frame1,text="RED", font=('arial',30,'bold'),command=lambda: self.salvar_aposta("RED"))
        self.botao_red.place(relx=0.56, rely=0.24)
       
 
@@ -147,6 +153,40 @@ class Applicação():
        self.hisotricotabela.column("#2", width=20)
 
        self.hisotricotabela.place(relx=0.05, rely=0.07, relheight=0.50,relwidth=0.90)
+
+    def salvar_aposta(self,resultado):
+       odd = self.entry_odd.get()
+       valor = self.entry_valor.get()
+
+       if odd and valor:
+          self.hisotricotabela.insert("","end", values=(odd,valor, resultado))
+          self.salvar()
+
+
+
+
+
+
+
+    def salvar(self):
+       #salvar historico local
+       historico  = []
+       for item in self.hisotricotabela.get_children():
+          valores = self.hisotricotabela.item(item,'values')
+          historico.append(valores)
+       with open('historico.json','w') as arquivo:
+          json.dump(historico, arquivo)
+
+    def carregar(self):
+       if os.path.exists("historico.json"):
+          with open("historico.json", 'r') as  arquivo:
+             try:
+                historico = json.load(arquivo)
+                for valores in historico:
+                   self.hisotricotabela.insert("","end",values=valores)
+             except json.JSONDecodeError:
+                pass
+       
    
 
 Applicação()
