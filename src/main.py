@@ -1,5 +1,6 @@
 #aqui é o programa pricincipal aonde tudo ira rodar.
 from tkinter import *
+from tkinter import ttk
 
 janela = Tk()
 
@@ -18,6 +19,8 @@ class Applicação():
      self.valor_odd()
      self.green()
      self.red()
+     self.frame2()
+     self.historico()
      janela.mainloop()
     def tela(self):
        #TITULO PRINCIPAL DO PROGRAMA
@@ -95,7 +98,7 @@ class Applicação():
     def aposta(self):
        #label aposta
        self.label_aposta = Label(self.frame1, text="APOSTA", font=('arial', 30))
-       self.label_aposta.place(relx=0.04, rely=0.08)
+       self.label_aposta.place(relx=0.36, rely=0.08)
     def valor_aposta(self):
        self.label_valor = Label(self.frame1, text="Valor Da Aposta:", font=('arial',25))
        self.label_valor.place(relx=0.04, rely=0.14)
@@ -107,17 +110,43 @@ class Applicação():
 
     def valor_odd(self):
        self.label_odd = Label(self.frame1, text="Valor Da ODD:", font=('arial',25))
-       self.label_odd.place(relx=0.04, rely=0.24)
+       self.label_odd.place(relx=0.54, rely=0.14)
         # ENTRADA
        self.entry_odd = Entry(self.frame1, text="Valor Da ODD:", font=('arial',18))
-       self.entry_odd.place(relx=0.04, rely=0.29)
+       self.entry_odd.place(relx=0.54, rely=0.19)
     # BOTAO GRENN E RED
     def green(self):
        self.botao_green = Button(self.frame1,text="GREEN", font=('arial',30,'bold'))
-       self.botao_green.place(relx=0.04, rely=0.33)
+       self.botao_green.place(relx=0.16, rely=0.24)
     def red(self):
        self.botao_red = Button(self.frame1,text="RED", font=('arial',30,'bold'))
-       self.botao_red.place(relx=0.34, rely=0.33)
+       self.botao_red.place(relx=0.56, rely=0.24)
+      
 
+
+     ### FRAME 2 PARA TELA DE HISTORICO
+    def frame2(self):
+       self.frame2 = Frame (self.janela, bd= 3, bg="#F57C00", highlightthickness=10, highlightbackground="#2F4F4F")
+       self.frame2.place(relx=0.025, rely=0.34, relwidth=0.95, relheight=0.95) 
+
+   ### criaçaão do historico e tabela
+    def historico(self):
+       ## TITULO DO HISTORICO
+       self.nomehistorico = Label(self.frame2, text="HISTORICO", font=('arial', 30, 'bold'))
+       self.nomehistorico.place(relx=0.30, rely=0.01)
+       ## sao colunas da tabela sao 3 uma para odd,valor da posta e o resultado.
+       self.hisotricotabela = ttk.Treeview(self.frame2, height=3,
+                                           column=("col1","col2","col3"))
+       ## cabeçalho da coluna
+       self.hisotricotabela.heading("#0", text="ODD")
+       self.hisotricotabela.heading("#1", text="VALOR")
+       self.hisotricotabela.heading("#2", text="RESULTADO")
+       ## tamanho da coluna na tela
+       self.hisotricotabela.column("#0", width=15)
+       self.hisotricotabela.column("#1", width=50)
+       self.hisotricotabela.column("#2", width=20)
+
+       self.hisotricotabela.place(relx=0.05, rely=0.07, relheight=0.50,relwidth=0.90)
+   
 
 Applicação()
