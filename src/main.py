@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 import json
 import os
+import re
 
 
 janela = Tk()
@@ -15,6 +16,7 @@ class Applicação():
      self.frameTELA()
      self._banca()
      self.botao_banca()
+     self.carregar()
      self.ativar_edicao()
      self.atualizar_banca()
      self.aposta()
@@ -26,7 +28,6 @@ class Applicação():
      self.historico()
      self.salvar_aposta(resultado=0)
      self.salvar()
-     self.carregar()
      janela.mainloop()
     def tela(self):
        #TITULO PRINCIPAL DO PROGRAMA
@@ -115,11 +116,17 @@ class Applicação():
 
 
     def valor_odd(self):
-       self.label_odd = Label(self.frame1, text="Valor Da ODD:", font=('arial',25))
-       self.label_odd.place(relx=0.54, rely=0.14)
-        # ENTRADA
-       self.entry_odd = Entry(self.frame1, text="Valor Da ODD:", font=('arial',18))
-       self.entry_odd.place(relx=0.54, rely=0.19)
+        self.label_odd = Label(self.frame1, text="Valor Da ODD:", font=('arial', 25))
+        self.label_odd.place(relx=0.54, rely=0.14)
+        
+        # Campo de entrada para a odd
+        self.entry_odd = Entry(self.frame1, font=('arial', 18))
+        self.entry_odd.place(relx=0.54, rely=0.19)
+
+
+
+       
+
     # BOTAO GRENN E RED
     def green(self):
        self.botao_green = Button(self.frame1,text="GREEN", font=('arial',30,'bold'), command=lambda: self.salvar_aposta("GREEN"))
@@ -135,7 +142,7 @@ class Applicação():
        self.frame2 = Frame (self.janela, bd= 3, bg="#F57C00", highlightthickness=10, highlightbackground="#2F4F4F")
        self.frame2.place(relx=0.025, rely=0.34, relwidth=0.95, relheight=0.95) 
 
-   ### criaçaão do historico e tabela
+   ### criaçaão do historico e tabelas
     def historico(self):
        ## TITULO DO HISTORICO
        self.nomehistorico = Label(self.frame2, text="HISTORICO", font=('arial', 30, 'bold'))
@@ -155,12 +162,36 @@ class Applicação():
        self.hisotricotabela.place(relx=0.05, rely=0.07, relheight=0.50,relwidth=0.90)
 
     def salvar_aposta(self,resultado):
-       odd = self.entry_odd.get()
-       valor = self.entry_valor.get()
+       try:
+         odd = float(self.entry_odd.get())
+         valor = float(self.entry_valor.get())
 
-       if odd and valor:
-          self.hisotricotabela.insert("","end", values=(odd,valor, resultado))
-          self.salvar()
+         #ver se aposta maior que banca.
+
+         if valor > self.banca:
+            banca_menor = Label(self.frame1, text="SALDO INSUFICIENTE !",font=('arial', 20), fg='RED', bg="#F57C00")
+            banca_menor.place(relx=0.05, rely=0.30)
+            self.janela.after(2000,banca_menor.place_forget) #some mensagem
+            return
+         
+         #calcular resultado das apostas
+         if resultado == "GREEN":
+            lucro = valor * (odd - 1)
+            self.banca += lucro
+         elif resultado == "RED":
+            self.banca -= valor
+         
+         # atualizar interface da banca
+         self.label_banca.config(text=f"Banca: R$ {self.banca:.2f}")
+
+         #salvar no historico 
+         self.hisotricotabela.insert("","end", values=(odd,valor,resultado))
+         self.salvar()
+       except ValueError:
+           erro_valor = Label(self.frame1, text="Digite apenas numeros!",font=('arial', 20), fg='RED', bg="#F57C00")
+           erro_valor.place(relx=0.05, rely=0.30)
+           self.janela.after(2000, erro_valor.place_forget)
+
 
 
 
@@ -174,16 +205,33 @@ class Applicação():
        for item in self.hisotricotabela.get_children():
           valores = self.hisotricotabela.item(item,'values')
           historico.append(valores)
+
+       #criar historico
+       dados = {
+         "banca": self.banca,
+         "historico": historico}
        with open('historico.json','w') as arquivo:
-          json.dump(historico, arquivo)
+          json.dump(historico, arquivo, indent=4)
+          print("historico salvo com sucesso!!")
 
     def carregar(self):
        if os.path.exists("historico.json"):
           with open("historico.json", 'r') as  arquivo:
              try:
-                historico = json.load(arquivo)
+                dados = json.load(arquivo)
+                #corrigindo se for lista
+                if isinstance(dados, list):
+                  dados =  {"banca": 100,  "historico": []}
+
+                # restaurar a a banca
+                self.banca = dados.get("banca",[])
+                self.label_banca.config(text=f"banca: R$ {self.banca:.2f}")
+
+                #restaurar historico
+                historico = dados.get("historico", [])
                 for valores in historico:
-                   self.hisotricotabela.insert("","end",values=valores)
+                  self.hisotricotabela.insert("","end", values=valores)
+                
              except json.JSONDecodeError:
                 pass
        
